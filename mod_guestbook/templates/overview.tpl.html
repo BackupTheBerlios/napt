@@ -1,0 +1,79 @@
+<SCRIPT LANGUAGE="JAVASCRIPT">
+<!--
+function DoSmilie( addSmilie ) {
+   var revisedMessage;
+   var currentMessage = document.gb.eintrag.value;
+   revisedMessage = currentMessage + addSmilie;
+   document.gb.eintrag.value = revisedMessage;
+   document.gb.eintrag.focus();
+   return;
+}
+function DoBBCode( addCode ) {
+   var revisedMessage;
+   var currentMessage = document.gb.eintrag.value;
+   var eingabe = prompt( 'Text: ', '');
+   revisedMessage = currentMessage + '[' + addCode + ']' + eingabe + '[/' + addCode + ']';
+   document.gb.eintrag.value = revisedMessage;
+   document.gb.eintrag.focus();
+   return;
+}
+-->
+</SCRIPT>
+
+<h1><!-- global.title --></h1>
+<p class="hint"><!-- global.hint --></p>
+<table width="100%">
+  <form name="gb" action="index.php?module=<!-- global.module -->&action=add&view=<!-- global.view -->" method="post">
+  <tr><td width="150">Name
+  </td><td>
+	 <input type="text" name="name" value="<!-- user.name -->" />
+  </td></tr>
+  <tr><td>e-Mail
+  </td><td>
+    <input type="text" name="email" value="<!-- user.email -->" />
+  </td></tr>
+  <tr><td>Website
+  </td><td>
+    <input type="text" name="webseite" value="<!-- user.webseite -->" />
+  </td></tr>
+  <tr><td>BB-Code
+  </td><td>
+    <!-- smilie.* -->
+      <a href="javascript: DoSmilie(' <!-- smilie.name -->');"><img src="<!-- smilie.img -->" border="0" alt="<!-- smilie.name -->"></a>
+    <!-- smilie.* --><br />
+      <button type="button" onClick="javascript:DoBBCode('b')"><strong>Fetter Text</strong></button>
+      <button type="button" onClick="javascript:DoBBCode('u')"><u>Unterstrichener Text</u></button>
+      <button type="button" onClick="javascript:DoBBCode('i')"><i>Kursiver Text</i></button><br />
+      <button type="button" onClick="javascript:DoBBCode('s')"><s>Durchgestrichener Text</s></button>
+      <button type="button" onClick="javascript:DoBBCode('url')"><span class="link">Link einf&uuml;gen</span></button>
+      <button type="button" onClick="javascript:DoBBCode('img')">Bild einf&uuml;gen</button>
+  </td></tr>
+  <tr><td>Nachricht
+  </td><td>
+    <textarea name="eintrag" cols="50" rows="5"><!-- user.eintrag --></textarea>
+  </td></tr>
+  <tr><td>
+  </td><td>
+   <input type="submit" value="Eintragen" />
+   <input type="reset" value="Zur&uuml;cksetzen" />
+  </td></tr>
+  </form>
+
+  <tr><td>&nbsp;
+  </td><td>&nbsp;
+  </td></tr>
+<!-- gb.* -->
+  <tr><td valign="top"><!-- gb.name --><br />
+    <!-- HAS.gb.email -->  
+    <a href="mailto:<!-- gb.email -->"><img src="modules/<!-- global.module -->/templates/img/mail.png" border="0" alt="e-Mail" /></a>
+    <!-- HAS.gb.email -->  
+    <!-- HAS.gb.webseite -->  
+    <a href="<!-- gb.webseite -->" target="_blank"><img src="modules/<!-- global.module -->/templates/img/home.png" border="0" alt="e-Mail" /></a>
+    <!-- HAS.gb.webseite -->  
+    
+  </td><td><!-- gb.text -->
+  </td></tr>
+<!-- gb.* -->
+</table>
+<!-- template.forward -->index.php?module=guestbook<!-- template.forward -->
+<!-- template.smilie --><img src="@SMILIEIMG@" border="0" alt="@SMILIENAME@"><!-- template.smilie -->
