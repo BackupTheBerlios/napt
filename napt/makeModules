@@ -1,0 +1,117 @@
+#! /bin/bash
+#
+# project:  NAPT
+# language: php
+# author:   Thomas Ley <cooker@softwarekueche.de>
+#
+
+MODULE=${1}
+if [ ! $MODULE ];then
+   echo "usage: ${0} Modulname"
+	exit 1
+fi
+echo -n ${MODULE}
+
+# Verzeichnisstruktur erstellen
+mkdir -p modules/${MODULE}/{scripts,templates,lib,config}
+
+# index.inc.php
+cat > modules/${MODULE}/index.inc.php << EOF 
+<?php
+include( 'modules/'.\$napt->module.'/lib/include.inc.php' );
+include( 'modules/'.\$napt->module.'/config/init.inc.php' );
+
+\$napt->setGlobal( "title", "L&uuml;ckentext" );
+
+if( \$napt->isAllowed( \$napt->module, \$napt->action ) ) {
+   include( 'scripts/'.\$napt->action.'.inc.php' );
+} 
+
+if( \$napt->isAllowed( \$napt->module, \$napt->view ) ) {
+   include( 'scripts/'.\$napt->view.'.inc.php' );
+} else {
+   \$localTpl = \$napt->getErrTemplate( 'notAllowed' );
+   \$napt->setGlobal( 'content', \$localTpl->getContent() );
+   \$napt->setGlobal( 'title', '${MODULE} - Fehler' );
+}
+?>
+EOF
+
+# lib/include.inc.php
+cat > modules/${MODULE}/lib/include.inc.php << EOF
+<?php
+
+#include( 'modules/'.\$napt->module.'/lib/Klasse.class.php' );
+
+?>
+EOF
+
+# config/init.inc.php
+cat > modules/${MODULE}/config/init.inc.php << EOF 
+<?php
+
+include( 'modules/'.\$napt->module.'/config/config.cfg.php' );
+
+?>
+EOF
+
+# config/rights.cfg.php
+cat > modules/${MODULE}/config/rights.cfg.php << EOF 
+<?php
+
+\$MODULE_NAME = Misc::getParentDir( __FILE__, false );
+
+\$rights[\$MODULE_NAME] = array();
+\$rights[\$MODULE_NAME]['overview']       = '*';
+\$rights[\$MODULE_NAME]['admin']          = 'admin';
+
+?>
+EOF
+
+# config/config.cfg.php
+cat > modules/${MODULE}/config/config.cfg.php << EOF 
+<?php
+
+\$cfg[\$napt->module] = array();
+\$cfg[\$napt->module]['dsn'] = 'root:password@localhost/${MODULE}';
+
+?>
+EOF
+
+# scripts/overview.inc.php
+cat > modules/${MODULE}/scripts/overview.inc.php << EOF 
+<?php
+
+\$localDb  = \$napt->getDatabase( \$cfg[\$napt->module]['dsn'] );
+\$localTpl = \$napt->getTemplate( 'overview' );
+
+\$napt->setGlobal( 'content', \$localTpl->getContent() );
+\$napt->setGlobal( 'title', '${MODULE} &Uuml;bersicht' );
+
+?>
+EOF
+
+# scripts/admin.inc.php
+cat > modules/${MODULE}/scripts/admin.inc.php << EOF 
+<?php
+
+\$localDb  = \$napt->getDatabase( \$cfg[\$napt->module]['dsn'] );
+\$localTpl = \$napt->getTemplate( 'admin' );
+
+\$napt->setGlobal( 'content', \$localTpl->getContent() );
+\$napt->setGlobal( 'title', '${MODULE} Administration' );
+
+?>
+EOF
+
+# templates/overview.tpl.html
+cat > modules/${MODULE}/templates/overview.tpl.html << EOF 
+<p>Startseite von ${MODULE}</p>
+EOF
+
+# templates/admin.tpl.html
+cat > modules/${MODULE}/templates/admin.tpl.html << EOF 
+<p>Adminseite von ${MODULE}</p>
+EOF
+
+echo "... erstellt."
